@@ -1,0 +1,6 @@
+G:\Visual Studio Projects\FormsOfArtificialIntelligence\FormsOfArtificialIntelligence\bin\Debug\FormsOfArtificialIntelligence.exe.config
+G:\Visual Studio Projects\FormsOfArtificialIntelligence\FormsOfArtificialIntelligence\bin\Debug\FormsOfArtificialIntelligence.exe
+G:\Visual Studio Projects\FormsOfArtificialIntelligence\FormsOfArtificialIntelligence\bin\Debug\FormsOfArtificialIntelligence.pdb
+G:\Visual Studio Projects\FormsOfArtificialIntelligence\FormsOfArtificialIntelligence\obj\Debug\FormsOfArtificialIntelligence.csprojResolveAssemblyReference.cache
+G:\Visual Studio Projects\FormsOfArtificialIntelligence\FormsOfArtificialIntelligence\obj\Debug\FormsOfArtificialIntelligence.exe
+G:\Visual Studio Projects\FormsOfArtificialIntelligence\FormsOfArtificialIntelligence\obj\Debug\FormsOfArtificialIntelligence.pdb
