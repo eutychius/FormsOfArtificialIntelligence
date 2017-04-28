@@ -9,12 +9,14 @@ namespace FormsOfArtificialIntelligence
 {
     class Program
     {
-        private const Int32 NUMBEROFROUNDS = 2000;
+        private const Int32 NUMBEROFROUNDS = 1000;
         private static int numberDraws = 0;
         private static Dictionary<BaseTicTacToeAI, int> playerWins = new Dictionary<BaseTicTacToeAI, int>();
         private static List<double> winningWeights;
         private static double winningScore = -1.0;
         private static double lowest = double.MaxValue;
+        private static double avgPercent;
+        private static List<double> nnWinPercentages = new List<double>();
 
         static void Main()
         {
@@ -25,7 +27,7 @@ namespace FormsOfArtificialIntelligence
             //insert 2 desired algorithms to players list
             players.Add(new RandomAlgorithm());
             //players.Add(new TraditionalAlgorithm());
-            players.Add(new NeuralNetworkAlgorithm(1, 0.05));
+            players.Add(new NeuralNetworkAlgorithm(1, 0.009));
             players[0].Symbol = 'O';
             players[1].Symbol = 'X';
 
@@ -56,12 +58,12 @@ namespace FormsOfArtificialIntelligence
                     winningWeights = nn.GetWeights();
                 }
                 lowest = lowest > nn.WinRatio ? nn.WinRatio : lowest;
-
+                avgPercent += nn.WinRatio;
                 playerWins[players[0]] = 0;
                 playerWins[players[1]] = 0;
                 numberDraws = 0;
             }
-            Console.WriteLine("Best Score was {0} after any key: playing 100 games with it. (lowest: {1})", winningScore, lowest);
+            Console.WriteLine("Avg Score was {0} after any key: playing 100 games with it. (lowest: {1}, best: {2})", avgPercent / 200, lowest, winningScore);
             Console.ReadKey();
 
             nn.FixedWeights = true;

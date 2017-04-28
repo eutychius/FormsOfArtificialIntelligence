@@ -41,9 +41,10 @@ namespace FormsOfArtificialIntelligence
             double sum = 0;
             for (int i = 0; i < board.Count; i++)
             {
-                sum += ConnectionWeights[i] * board[i] + Bias;
+                sum += ConnectionWeights[i] * board[i];
             }
-            LatestOutput = Transfer(sum);
+
+            LatestOutput = Transfer(sum + Bias);
 
             return LatestOutput;
         }

@@ -12,17 +12,16 @@ namespace FormsOfArtificialIntelligence
         TraditionalAlgorithm traditionalAi = new TraditionalAlgorithm();
 
         public override string AIType => "NeuralNetwork";
-        private List<double> inputs;
         private List<Layer> neuralLayers;
         private double learningConstant;
-        private double[] inputBoard = new double[27];
+        private double[] inputBoard = new double[18];
         private bool innerCall = false;
         public bool FixedWeights = false;
 
         public NeuralNetworkAlgorithm(int seed, double learningConstant)
         {
             random = new Random(seed);
-            neuralLayers = CreateLayers(2, 27);
+            neuralLayers = CreateLayers(2, 18);
             this.learningConstant = learningConstant;
 
             InitializeWeightsOnNeurons(neuralLayers, false);
@@ -34,14 +33,14 @@ namespace FormsOfArtificialIntelligence
                 Reweight(board);
             innerCall = false;
 
-            inputs = GetOutputValues(board);
+            List<double> inputs = GetOutputValues(board);
 
             return GetIndexForHighestPossibleValue(inputs, board);
         }
 
         private List<double> GetOutputValues(List<char> board)
         {
-            inputs = ConvertBoard(board);
+            List<double> inputs = ConvertBoard(board);
 
             foreach (var layer in neuralLayers)
             {
@@ -53,10 +52,13 @@ namespace FormsOfArtificialIntelligence
         private int GetIndexForHighestPossibleValue(List<double> results, List<char> board)
         {
             List<double> orderedResults = results.OrderByDescending(x => x).ToList();
-            for (int i = 0; i < orderedResults.Count; i++)
+            foreach (var orderedResult in orderedResults)
             {
-                if (board[i + 1] != opponentSymbol && board[i + 1] != symbol)
-                    return i + 1;
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (orderedResult.Equals(results[i]) && board[i+1] != opponentSymbol && board[i+1] != symbol)
+                        return i + 1;
+                }
             }
             return -1;
         }
@@ -64,27 +66,8 @@ namespace FormsOfArtificialIntelligence
         private List<double> ConvertBoard(List<char> board)
         {
             var inputs = new List<double>();
-            //double[] result = new double[27];
 
             board.RemoveAt(0);
-
-            //for (int i = 0; i < 9; i++)
-            //{
-            //    if (board[i] == symbol)
-            //    {
-            //        result[i] = 1;
-            //    }
-            //    else if (board[i] == opponentSymbol)
-            //    {
-            //        result[i + 9] = 1;
-            //    }
-            //    else
-            //    {
-            //        result[i + 18] = 1;
-            //    }
-            //}
-            //result.ToList().CopyTo(inputBoard);
-            //return result.ToList();
             foreach (var cell in board)
             {
                 if (cell == symbol)
@@ -113,7 +96,7 @@ namespace FormsOfArtificialIntelligence
             }
 
             var outputNeurons = new List<Neuron>();
-            for (int i = 1; i < 28; i++)
+            for (int i = 1; i < 10; i++)
             {
                 outputNeurons.Add(new Neuron());
             }
@@ -125,23 +108,27 @@ namespace FormsOfArtificialIntelligence
         {
             //InitializeWeightsOnNeurons(neuralLayers, true); //Random Reweighting/training
             innerCall = true;
-            MakeMove(board);
+            int ownChoice = MakeMove(board);
 
             traditionalAi.Symbol = symbol;
             int choice = traditionalAi.MakeMoveNotRandom(board);
-            if(choice==-1)
+            if(choice==-1 || ownChoice == choice)
                 return;
 
-            board[choice] = symbol;
-            List<double> expectedInts = ConvertBoard(board);
-            board[choice] = choice.ToString()[0];
+            double[] expectedDoubles = new double[9];
 
-            BackPropagate(neuralLayers, expectedInts);
+            //for (int i = 0; i < expectedDoubles.Length; i++)
+            //{
+            //    expectedDoubles[i] = 0.25;
+            //}
+            expectedDoubles[choice-1] = 1;
+
+            BackPropagate(neuralLayers, expectedDoubles);
         }
 
 
         //https://www.youtube.com/watch?v=zpykfC4VnpM
-        private void BackPropagate(List<Layer> layers, List<double> expectedInts)
+        private void BackPropagate(List<Layer> layers, double[] expected)
         {
             int layerCount = 0;
             foreach (var layer in layers)
@@ -151,18 +138,18 @@ namespace FormsOfArtificialIntelligence
                 {
                     double neuronLayerBeforeOutput = GetNeuronLayerBeforeOutput(layerCount, neuronCount);
 
-                    neuron.Bias += learningConstant * neuronLayerBeforeOutput * (1 - neuronLayerBeforeOutput) * GetSumOfOutputLayer(layers[layerCount], neuronCount, layer.Neurons.Select(x => x.LatestOutput).ToList(), expectedInts);
+                    //neuron.Bias -= learningConstant * neuronLayerBeforeOutput * (1 - neuronLayerBeforeOutput) * GetOutputSumOfLayer(layers[layerCount], neuronCount, layer.Neurons.Select(x => x.LatestOutput).ToList(), expected);
                     for (int i = 0; i < neuron.ConnectionWeights.Count; i++)
                     {
                         double weightmodifier;
 
                         if (layerCount == layers.Count-1)//output nodes get reweighted differently
                         {
-                            weightmodifier = neuron.LatestOutput * (1 - neuron.LatestOutput) * (neuron.LatestOutput - expectedInts[i % 9]);
+                            weightmodifier = neuron.LatestOutput * (1 - neuron.LatestOutput) * (neuron.LatestOutput - expected[i % 9]);
                         }
                         else
                         {
-                            weightmodifier = neuron.LatestOutput * (1 - neuron.LatestOutput) * GetSumOfOutputLayer(layers[layerCount], neuronCount, layer.Neurons.Select(x => x.LatestOutput).ToList(), expectedInts);
+                            weightmodifier = neuron.LatestOutput * (1 - neuron.LatestOutput) * GetOutputSumOfLayer(layers[layerCount], neuronCount, layer.Neurons.Select(x => x.LatestOutput).ToList(), expected);
                         }
                         neuron.ConnectionWeights[i] -= weightmodifier * learningConstant * neuronLayerBeforeOutput;
                     }
@@ -180,7 +167,7 @@ namespace FormsOfArtificialIntelligence
             return neuralLayers[layerCount - 1].Neurons[neuronCount].LatestOutput;
         }
 
-        private double GetSumOfOutputLayer(Layer layer, int neuronNr, List<double> kOut, List<double> expected)
+        private double GetOutputSumOfLayer(Layer layer, int neuronNr, List<double> kOut, double[] expected)
         {
             double sum = 0;
             foreach (var neuron in layer.Neurons)
@@ -195,10 +182,10 @@ namespace FormsOfArtificialIntelligence
             int layerCount = 0;
             foreach (var layer in layers)
             {
-                int numberConnections = layerCount != 0 ? Math.Max(layer.Neurons.Count, layers[layerCount-1].Neurons.Count) : layer.Neurons.Count;
+                int numberConnections = layerCount != 0 ? Math.Max(layer.Neurons.Count, layers[layerCount-1].Neurons.Count) : inputBoard.Length;
                 foreach (var neuron in layer.Neurons)
                 {
-                    //neuron.Bias = random.NextDouble() * 2;
+                    //neuron.Bias = random.NextDouble();
 
                     for (int i = 0; i < numberConnections; i++)
                     {
