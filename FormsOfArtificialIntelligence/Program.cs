@@ -25,8 +25,8 @@ namespace FormsOfArtificialIntelligence
             Random random = new Random();
 
             //insert 2 desired algorithms to players list
-            players.Add(new RandomAlgorithm());
-            //players.Add(new TraditionalAlgorithm());
+            //players.Add(new RandomAlgorithm());
+            players.Add(new TraditionalAlgorithm());
             players.Add(new NeuralNetworkAlgorithm(1, 0.009));
             players[0].Symbol = 'O';
             players[1].Symbol = 'X';
