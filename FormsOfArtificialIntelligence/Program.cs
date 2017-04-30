@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,14 +11,16 @@ namespace FormsOfArtificialIntelligence
     class Program
     {
         private const Int32 NUMBEROFROUNDS = 200;
+        private const Int32 NUMBEROFGENERATIONS = 1000;
         private static int numberDraws = 0;
         private static Dictionary<BaseTicTacToeAI, int> playerWins = new Dictionary<BaseTicTacToeAI, int>();
         private static List<double> bestWeights;
         private static double bestScore = -1.0;
 
-        private static int populationNr = 1000;
+        private static int populationNr = 500;
         private static List<DNA> population = new List<DNA>();
         private const int PopulationSeed = 1;
+        private static List<double> wins = new List<double>();
 
         static void Main()
         {
@@ -44,7 +47,7 @@ namespace FormsOfArtificialIntelligence
                 population.Add(new DNA() { Genes = nn.GetWeights() });
             }
 
-            for (int genNr = 0; genNr < 400; genNr++)
+            for (int genNr = 0; genNr < NUMBEROFGENERATIONS; genNr++)
             {
                 for (int popNr = 0; popNr < population.Count; popNr++)
                 {
@@ -68,7 +71,9 @@ namespace FormsOfArtificialIntelligence
                                 population[popNr].NumberLooses++;
                         }
                     }
-                    //PrintStats(players, game);
+                    //PrintStats(players, game);+
+                    if(population[popNr].NumberWins != 0)
+                        wins.Add(population[popNr].NumberWins);
 
                     playerWins[players[0]] = 0;
                     playerWins[players[1]] = 0;
@@ -83,7 +88,8 @@ namespace FormsOfArtificialIntelligence
                     dna.CalculateFitness();
                 }
 
-                Console.WriteLine("Generation {0}: Best Score was {1}", genNr, best);
+                Console.WriteLine("Generation {0}: Best Score was {1}, avg: {2}", genNr, best, (double) wins.Sum() / wins.Count);
+                wins.Clear();
 
                 //make mating pool
                 List<DNA> matingPool = new List<DNA>();
@@ -120,7 +126,7 @@ namespace FormsOfArtificialIntelligence
                     DNA parentB = matingPool[b];
 
                     DNA child = parentA.Crossover(parentB, random);
-                    child.mutate(0.01, random);
+                    child.mutate(0.015, random);
                     nextGeneration.Add(child);
                 }
                 population = nextGeneration;

@@ -20,7 +20,7 @@ namespace FormsOfArtificialIntelligence
             int numberOfRounds = NumberWins + NumberLooses+ NumberDraws;
             double winRatio = (double)NumberWins / numberOfRounds;
             winRatio *= 100;
-            //Fitness = (int) (winRatio * winRatio);
+            //Fitness = (int) (winRatio * winRatio) + NumberDraws / numberOfRounds;
             Fitness = winRatio.Equals(0) ? 0 : (int) Math.Pow(2, winRatio);
 
             NumberWins = 0;
@@ -47,14 +47,14 @@ namespace FormsOfArtificialIntelligence
             //    Genes[i] = choice == 0 ? Genes[i] : partner.Genes[i];
             //}
 
-            //for (int i = Genes.Count / 2; i < Genes.Count; i++)// half/half genes
-            //{
-            //    Genes[i] = partner.Genes[i];
-            //}
             for (int i = Genes.Count / 2; i < Genes.Count; i++)// half/half genes
             {
-                Genes[i] = (partner.Genes[i] + Genes[i]) / 2;
+                Genes[i] = partner.Genes[i];
             }
+            //for (int i = Genes.Count / 2; i < Genes.Count; i++)
+            //{
+            //    Genes[i] = (partner.Genes[i] + Genes[i]) / 2;
+            //}
             child.Genes = Genes;
             return child;
         }
