@@ -9,7 +9,7 @@ namespace FormsOfArtificialIntelligence
 {
     class Program
     {
-        private const Int32 NUMBEROFROUNDS = 100;
+        private const Int32 NUMBEROFROUNDS = 200;
         private static int numberDraws = 0;
         private static Dictionary<BaseTicTacToeAI, int> playerWins = new Dictionary<BaseTicTacToeAI, int>();
         private static List<double> bestWeights;
@@ -75,7 +75,7 @@ namespace FormsOfArtificialIntelligence
                     numberDraws = 0;
                 }
 
-                double best = population.OrderByDescending(x => x.NumberWins).First().NumberWins;
+                double best = (double) population.OrderByDescending(x => x.NumberWins).First().NumberWins / NUMBEROFROUNDS;
 
 
                 foreach (var dna in population)
@@ -90,10 +90,23 @@ namespace FormsOfArtificialIntelligence
 
                 foreach (var dna in population)
                 {
-                    for (int fitnessNr = 0; fitnessNr < dna.Fitness; fitnessNr++)//add fitness, more variety needed? take rank instead
+                    for (int fitnessNr = 0; fitnessNr < dna.Fitness; fitnessNr++)//add fitness.. more variety needed? take rank instead
                     {
                         matingPool.Add(dna);
                     }
+                }
+
+                if (matingPool.Count == 0)
+                {
+                    Console.WriteLine("seed was bad, reseeding..");
+                    random = new Random(random.Next());
+                    population.Clear();
+                    for (int i = 1; i < populationNr; i++)
+                    {
+                        nn = new NeuralNetworkAlgorithm(random.Next(), 0.009);
+                        population.Add(new DNA() { Genes = nn.GetWeights() });
+                    }
+                    continue;
                 }
 
                 //mate & mutate
