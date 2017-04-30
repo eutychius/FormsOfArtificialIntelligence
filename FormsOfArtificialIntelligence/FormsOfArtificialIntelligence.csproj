@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTicTacToeAI.cs" />
+    <Compile Include="DNA.cs" />
     <Compile Include="NeuralNetworkAlgorithm.cs" />
     <Compile Include="Neuron.cs" />
     <Compile Include="Program.cs" />

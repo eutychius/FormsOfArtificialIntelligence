@@ -24,8 +24,6 @@ namespace FormsOfArtificialIntelligence
 
     class Neuron
     {
-        public double LatestOutput;
-
         public double Bias = 0;
         public List<double> ConnectionWeights = new List<double>();
 
@@ -38,9 +36,7 @@ namespace FormsOfArtificialIntelligence
                 sum += ConnectionWeights[i] * inputs[i];
             }
 
-            LatestOutput = Transfer(sum + Bias);
-
-            return LatestOutput;
+            return Transfer(sum + Bias);
         }
 
         //Sigmoid Function

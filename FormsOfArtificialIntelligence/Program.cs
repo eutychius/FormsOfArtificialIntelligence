@@ -9,78 +9,112 @@ namespace FormsOfArtificialIntelligence
 {
     class Program
     {
-        private const Int32 NUMBEROFROUNDS = 1000;
+        private const Int32 NUMBEROFROUNDS = 100;
         private static int numberDraws = 0;
         private static Dictionary<BaseTicTacToeAI, int> playerWins = new Dictionary<BaseTicTacToeAI, int>();
-        private static List<double> winningWeights;
-        private static double winningScore = -1.0;
-        private static double lowest = double.MaxValue;
-        private static double avgPercent;
-        private static List<double> nnWinPercentages = new List<double>();
+        private static List<double> bestWeights;
+        private static double bestScore = -1.0;
+
+        private static int populationNr = 1000;
+        private static List<DNA> population = new List<DNA>();
+        private const int PopulationSeed = 1;
 
         static void Main()
         {
             TicTacToe game = new TicTacToe();
             List<BaseTicTacToeAI> players = new List<BaseTicTacToeAI>();
-            Random random = new Random();
+            Random random = new Random(PopulationSeed);
 
             //insert 2 desired algorithms to players list
-            players.Add(new RandomAlgorithm());
-            //players.Add(new TraditionalAlgorithm());
-            players.Add(new NeuralNetworkAlgorithm(1, 0.009));
+            //players.Add(new RandomAlgorithm());
+            players.Add(new TraditionalAlgorithm());
+            players.Add(new NeuralNetworkAlgorithm(random.Next(), 0.009));
             players[0].Symbol = 'O';
             players[1].Symbol = 'X';
 
             playerWins.Add(players[0], 0);
             playerWins.Add(players[1], 0);
 
-            NeuralNetworkAlgorithm nn = (NeuralNetworkAlgorithm)players[1];
-
-            for (int epos = 0; epos < 400; epos++)
+            NeuralNetworkAlgorithm nn = (NeuralNetworkAlgorithm) players[1];
+            population.Add(new DNA() {Genes = nn.GetWeights()});
+            //create population randomly
+            for (int i = 1; i < populationNr; i++)
             {
-                for (int i = 0; i < NUMBEROFROUNDS; i++)
-                {
-                    //player.MakeMove(List<char> board) gets called for every AI and turn in PlayGame
-                    BaseTicTacToeAI winner = game.PlayGame(players, random.Next(2));
+                nn = new NeuralNetworkAlgorithm(random.Next(), 0.009);
+                population.Add(new DNA() { Genes = nn.GetWeights() });
+            }
 
-                    if (winner == null)
-                        numberDraws++;
-                    else
+            for (int genNr = 0; genNr < 400; genNr++)
+            {
+                for (int popNr = 0; popNr < population.Count; popNr++)
+                {
+                    nn.SetWeights(population[popNr].Genes);
+
+                    for (int i = 0; i < NUMBEROFROUNDS; i++)
                     {
-                        playerWins[winner]++;
+                        BaseTicTacToeAI winner = game.PlayGame(players, random.Next(2));
+
+                        if (winner == null)
+                        {
+                            numberDraws++;
+                            population[popNr].NumberDraws++;
+                        }
+                        else
+                        {
+                            playerWins[winner]++;
+                            if (winner is NeuralNetworkAlgorithm)
+                                population[popNr].NumberWins++;
+                            else
+                                population[popNr].NumberLooses++;
+                        }
+                    }
+                    //PrintStats(players, game);
+
+                    playerWins[players[0]] = 0;
+                    playerWins[players[1]] = 0;
+                    numberDraws = 0;
+                }
+
+                double best = population.OrderByDescending(x => x.NumberWins).First().NumberWins;
+
+
+                foreach (var dna in population)
+                {
+                    dna.CalculateFitness();
+                }
+
+                Console.WriteLine("Generation {0}: Best Score was {1}", genNr, best);
+
+                //make mating pool
+                List<DNA> matingPool = new List<DNA>();
+
+                foreach (var dna in population)
+                {
+                    for (int fitnessNr = 0; fitnessNr < dna.Fitness; fitnessNr++)//add fitness, more variety needed? take rank instead
+                    {
+                        matingPool.Add(dna);
                     }
                 }
-                PrintStats(players, game);
 
-                if (nn.WinRatio > winningScore)
+                //mate & mutate
+                var nextGeneration = new List<DNA>();
+                for (int popNr = 0; popNr < population.Count; popNr++)
                 {
-                    winningScore = nn.WinRatio;
-                    winningWeights = nn.GetWeights();
-                }
-                lowest = lowest > nn.WinRatio ? nn.WinRatio : lowest;
-                avgPercent += nn.WinRatio;
-                playerWins[players[0]] = 0;
-                playerWins[players[1]] = 0;
-                numberDraws = 0;
-            }
-            Console.WriteLine("Avg Score was {0} after any key: playing 100 games with it. (lowest: {1}, best: {2})", avgPercent / 400, lowest, winningScore);
-            Console.ReadKey();
+                    int a = random.Next(matingPool.Count);
+                    int b = random.Next(matingPool.Count);
 
-            nn.FixedWeights = true;
-            nn.SetWeights(winningWeights);
-            for (int i = 0; i < 1000; i++)
-            {
-                BaseTicTacToeAI winner = game.PlayGame(players, random.Next(2), false);
+                    DNA parentA = matingPool[a];
+                    DNA parentB = matingPool[b];
 
-                if (winner == null)
-                    numberDraws++;
-                else
-                {
-                    playerWins[winner]++;
+                    DNA child = parentA.Crossover(parentB, random);
+                    child.mutate(0.01, random);
+                    nextGeneration.Add(child);
                 }
+                population = nextGeneration;
             }
+
+
             PrintStats(players, game);
-
             Console.ReadKey();
         }
 
