@@ -36,7 +36,7 @@ namespace FormsOfArtificialIntelligence
 
             NeuralNetworkAlgorithm nn = (NeuralNetworkAlgorithm)players[1];
 
-            for (int epos = 0; epos < 200; epos++)
+            for (int epos = 0; epos < 400; epos++)
             {
                 for (int i = 0; i < NUMBEROFROUNDS; i++)
                 {
@@ -63,7 +63,7 @@ namespace FormsOfArtificialIntelligence
                 playerWins[players[1]] = 0;
                 numberDraws = 0;
             }
-            Console.WriteLine("Avg Score was {0} after any key: playing 100 games with it. (lowest: {1}, best: {2})", avgPercent / 200, lowest, winningScore);
+            Console.WriteLine("Avg Score was {0} after any key: playing 100 games with it. (lowest: {1}, best: {2})", avgPercent / 400, lowest, winningScore);
             Console.ReadKey();
 
             nn.FixedWeights = true;

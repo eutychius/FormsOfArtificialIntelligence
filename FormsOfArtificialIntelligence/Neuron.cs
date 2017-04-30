@@ -7,13 +7,6 @@ using System.Threading.Tasks;
 
 namespace FormsOfArtificialIntelligence
 {
-    class Connection
-    {
-        public double Weight;
-        public Neuron NeuronLeft;
-        //public Neuron NeuronRight;
-    }
-
     class Layer
     {
         public List<Neuron> Neurons;
@@ -36,12 +29,13 @@ namespace FormsOfArtificialIntelligence
         public double Bias = 0;
         public List<double> ConnectionWeights = new List<double>();
 
-        public double FeedForward(List<double> board)
+        //class neuron
+        public double FeedForward(List<double> inputs)
         {
             double sum = 0;
-            for (int i = 0; i < board.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
-                sum += ConnectionWeights[i] * board[i];
+                sum += ConnectionWeights[i] * inputs[i];
             }
 
             LatestOutput = Transfer(sum + Bias);

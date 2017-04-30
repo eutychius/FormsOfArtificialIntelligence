@@ -22,7 +22,7 @@ namespace FormsOfArtificialIntelligence
         {
             random = new Random(seed);
             neuralLayers = CreateLayers(2, 18);
-            this.learningConstant = learningConstant;
+            this.learningConstant = learningConstant; //needed for reweighting
 
             InitializeWeightsOnNeurons(neuralLayers, false);
         }
@@ -67,7 +67,7 @@ namespace FormsOfArtificialIntelligence
         {
             var inputs = new List<double>();
 
-            board.RemoveAt(0);
+            board.RemoveAt(0);//first index is unused for visualiziation purposes
             foreach (var cell in board)
             {
                 if (cell == symbol)
@@ -85,7 +85,7 @@ namespace FormsOfArtificialIntelligence
         private List<Layer> CreateLayers(int numberLayers, int numberHiddenLayerNeurons)
         {
             var layers = new List<Layer>();
-            for (int i = 1; i < numberLayers; i++)
+            for (int i = 1; i < numberLayers; i++)//create hidden layers
             {
                 List<Neuron> neurons = new List<Neuron>();
                 for (int j = 0; j < numberHiddenLayerNeurons; j++)
@@ -96,7 +96,7 @@ namespace FormsOfArtificialIntelligence
             }
 
             var outputNeurons = new List<Neuron>();
-            for (int i = 1; i < 10; i++)
+            for (int i = 0; i < 9; i++)//we want 9 outputs, 1 for every field
             {
                 outputNeurons.Add(new Neuron());
             }
@@ -112,14 +112,14 @@ namespace FormsOfArtificialIntelligence
 
             traditionalAi.Symbol = symbol;
             int choice = traditionalAi.MakeMoveNotRandom(board);
-            if(choice==-1 || ownChoice == choice)
+            if(choice==-1 /*|| ownChoice == choice*/)
                 return;
 
             double[] expectedDoubles = new double[9];
 
             //for (int i = 0; i < expectedDoubles.Length; i++)
             //{
-            //    expectedDoubles[i] = 0.25;
+            //    expectedDoubles[i] = 0.2;
             //}
             expectedDoubles[choice-1] = 1;
 
