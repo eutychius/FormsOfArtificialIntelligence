@@ -36,12 +36,12 @@ namespace FormsOfArtificialIntelligence
 
             NeuralNetworkAlgorithm nn = (NeuralNetworkAlgorithm)players[1];
 
-            for (int epos = 0; epos < 400; epos++)
+            for (int epos = 0; epos < 300; epos++)
             {
                 for (int i = 0; i < NUMBEROFROUNDS; i++)
                 {
                     //player.MakeMove(List<char> board) gets called for every AI and turn in PlayGame
-                    BaseTicTacToeAI winner = game.PlayGame(players, random.Next(2));
+                    BaseTicTacToeAI winner = game.PlayGame(players, random.Next(2));//random.Next(2)
 
                     if (winner == null)
                         numberDraws++;
@@ -63,7 +63,7 @@ namespace FormsOfArtificialIntelligence
                 playerWins[players[1]] = 0;
                 numberDraws = 0;
             }
-            Console.WriteLine("Avg Score was {0} after any key: playing 100 games with it. (lowest: {1}, best: {2})", avgPercent / 400, lowest, winningScore);
+            Console.WriteLine("Avg Score was {0} after any key: playing 1000 games with it. (lowest: {1}, best: {2})", avgPercent / 400, lowest, winningScore);
             Console.ReadKey();
 
             nn.FixedWeights = true;

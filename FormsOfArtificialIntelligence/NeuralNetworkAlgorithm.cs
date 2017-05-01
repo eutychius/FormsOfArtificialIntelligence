@@ -29,11 +29,17 @@ namespace FormsOfArtificialIntelligence
 
         public override int MakeMove(List<char> board)
         {
+            //if (!innerCall && !FixedWeights)
+            //    Reweight(board);
+            //innerCall = false;
+
+            List<double> inputs = GetOutputValues(board);
+
             if (!innerCall && !FixedWeights)
                 Reweight(board);
             innerCall = false;
 
-            List<double> inputs = GetOutputValues(board);
+            //if (!FixedWeights) Reweight(board);
 
             return GetIndexForHighestPossibleValue(inputs, board);
         }
@@ -108,20 +114,13 @@ namespace FormsOfArtificialIntelligence
         {
             //InitializeWeightsOnNeurons(neuralLayers, true); //Random Reweighting/training
             innerCall = true;
-            int ownChoice = MakeMove(board);
+            MakeMove(board);//for computing neuron.LatestOutput
 
             traditionalAi.Symbol = symbol;
-            int choice = traditionalAi.MakeMoveNotRandom(board);
-            if(choice==-1 /*|| ownChoice == choice*/)
-                return;
+            int choice = traditionalAi.MakeMove(board);
 
             double[] expectedDoubles = new double[9];
-
-            //for (int i = 0; i < expectedDoubles.Length; i++)
-            //{
-            //    expectedDoubles[i] = 0.2;
-            //}
-            expectedDoubles[choice-1] = 1;
+            expectedDoubles[choice-1] = 1;//we just want the chosen index to be 1, others 0
 
             BackPropagate(neuralLayers, expectedDoubles);
         }
@@ -190,9 +189,9 @@ namespace FormsOfArtificialIntelligence
                     for (int i = 0; i < numberConnections; i++)
                     {
                         if (reset)
-                            neuron.ConnectionWeights[i] = random.NextDouble();
+                            neuron.ConnectionWeights[i] = random.NextDouble() * 2 - 1;
                         else
-                            neuron.ConnectionWeights.Add(random.NextDouble());
+                            neuron.ConnectionWeights.Add(random.NextDouble() * 2 - 1);
 
                     }
                 }

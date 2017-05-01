@@ -35,30 +35,6 @@ namespace FormsOfArtificialIntelligence
                     return i;
             }
 
-            return MakeRandomMove(board);
-        }
-
-        public int MakeMoveNotRandom(List<char> board)
-        {
-            int choice = LastMovePossible(board, symbol, opponentSymbol);
-            if (choice != -1)
-                return choice;
-
-            //block enemy if he has possible last move
-            choice = LastMovePossible(board, opponentSymbol, symbol);
-            if (choice != -1)
-                return choice;
-
-            choice = CheckForUsefulSecondSymbol(board);
-            if (choice != -1)
-                return choice;
-
-            for (int i = 1; i < board.Count; i++)
-            {
-                if (board[i] != symbol && board[i] != opponentSymbol)
-                    return i;
-            }
-
             return -1;
         }
 
