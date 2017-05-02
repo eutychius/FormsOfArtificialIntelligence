@@ -9,20 +9,14 @@ namespace FormsOfArtificialIntelligence
 {
     class NeuralNetworkAlgorithm : BaseTicTacToeAI
     {
-        TraditionalAlgorithm traditionalAi = new TraditionalAlgorithm();
-
         public override string AIType => "NeuralNetwork";
         private List<Layer> neuralLayers;
-        private double learningConstant;
-        private double[] inputBoard = new double[18];
-        private bool innerCall = false;
-        public bool FixedWeights = false;
+        private readonly double[] inputBoard = new double[18];
 
-        public NeuralNetworkAlgorithm(int seed, double learningConstant)
+        public NeuralNetworkAlgorithm(int seed)
         {
             random = new Random(seed);
             neuralLayers = CreateLayers(2, 18);
-            this.learningConstant = learningConstant; //needed for reweighting
 
             InitializeWeightsOnNeurons(neuralLayers, false);
         }

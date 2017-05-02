@@ -31,15 +31,14 @@ namespace FormsOfArtificialIntelligence
 
         protected int MakeRandomMove(List<char> board)
         {
-            bool valid = false;
-            int choice = 0;
-            while (!valid)
+            List<int> availableChoices = new List<int>();
+            for (int i = 1; i < 10; i++)
             {
-                choice = random.Next(9) + 1;
-                if (board[choice] != 'X' && board[choice] != 'O')
-                    valid = true;
+                if(board[i] != 'X' && board[i] != 'O')
+                    availableChoices.Add(i);
             }
-            return choice;
+
+            return availableChoices[random.Next(availableChoices.Count)];
         }
     }
 }
