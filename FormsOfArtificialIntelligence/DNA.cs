@@ -22,7 +22,7 @@ namespace FormsOfArtificialIntelligence
             winRatio *= 100;
             Fitness = (int) (winRatio * winRatio) + NumberDraws / 4;
             //Fitness = winRatio.Equals(0) ? 0 : (int) Math.Pow(2, winRatio);
-            if (Fitness == 0) Fitness = 1;
+            //if (Fitness == 0) Fitness = 1;
             NumberWins = 0;
             NumberDraws = 0;
             NumberLooses = 0;
@@ -33,28 +33,28 @@ namespace FormsOfArtificialIntelligence
             for (int i = 0; i < Genes.Count; i++)
             {
                 if (random.NextDouble() < mutationRate)
-                    Genes[i] = random.NextDouble() * 2 - 1;
+                    Genes[i] = random.NextDouble() * 3 - 1.5;
             }
         }
 
         public DNA Crossover(DNA partner, Random random)
         {
             DNA child = new DNA();
-            //for (int i = 0; i < Genes.Count; i++)//coin flip decides if gene comes from parentA or parentB
-            //{
-            //    int choice = random.Next(2);
+            for (int i = 0; i < Genes.Count; i++)//coin flip decides if gene comes from parentA or parentB
+            {
+                int choice = random.Next(2);
 
-            //    Genes[i] = choice == 0 ? Genes[i] : partner.Genes[i];
-            //}
+                Genes[i] = choice == 0 ? Genes[i] : partner.Genes[i];
+            }
 
-            //for (int i = Genes.Count / 2; i < Genes.Count; i++)// half/half genes
+            //for (int i = Genes.Count / 2; i < Genes.Count; i++)// half/half genes probably not
             //{
             //    Genes[i] = partner.Genes[i];
             //}
-            for (int i = Genes.Count / 2; i < Genes.Count; i++)
-            {
-                Genes[i] = (partner.Genes[i] + Genes[i]) / 2;
-            }
+            //for (int i = Genes.Count / 2; i < Genes.Count; i++)
+            //{
+            //    Genes[i] = (partner.Genes[i] + Genes[i]) / 2;
+            //}
             child.Genes = Genes;
             return child;
         }

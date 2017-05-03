@@ -107,9 +107,9 @@ namespace FormsOfArtificialIntelligence
                     for (int i = 0; i < numberConnections; i++)
                     {
                         if (reset)
-                            neuron.ConnectionWeights[i] = random.NextDouble() * 2 - 1;
+                            neuron.ConnectionWeights[i] = random.NextDouble() * 3 - 1.5;
                         else
-                            neuron.ConnectionWeights.Add(random.NextDouble() * 2 - 1);
+                            neuron.ConnectionWeights.Add(random.NextDouble() * 3 - 1.5);
 
                     }
                 }

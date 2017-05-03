@@ -91,25 +91,6 @@ namespace FormsOfArtificialIntelligence
                 }
 
                 Console.WriteLine("Generation {0}: Best Score was {1}"/*".. Playing 1000 games with it now:"*/, genNr, bestWins / NUMBEROFROUNDS);
-                //nn.SetWeights(best.Genes);
-
-                //for (int i = 0; i < 1000; i++)
-                //{
-                //    BaseTicTacToeAI winner = new TicTacToe().PlayGame(players, random.Next(2));
-                //    if (winner == null)
-                //    {
-                //        numberDraws++;
-                //    }
-                //    else
-                //    {
-                //        playerWins[winner]++;
-                //    }
-                //}
-                //PrintStats(players);
-
-                //playerWins[players[0]] = 0;
-                //playerWins[players[1]] = 0;
-                //numberDraws = 0;
 
                 //make mating pool
                 List<DNA> matingPool = new List<DNA>();
