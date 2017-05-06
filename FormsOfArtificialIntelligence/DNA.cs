@@ -13,7 +13,13 @@ namespace FormsOfArtificialIntelligence
         public int NumberWins;
         public int NumberLooses;
         public int NumberDraws;
-        public int Fitness;
+        public long Fitness;
+        public Random Random;
+
+        public DNA(int seed)
+        {
+            Random = new Random(seed);
+        }
 
         public void CalculateFitness()
         {
@@ -21,42 +27,54 @@ namespace FormsOfArtificialIntelligence
             double winRatio = (double)NumberWins / numberOfRounds;
             winRatio *= 100;
             Fitness = (int) (winRatio * winRatio) + NumberDraws / 4;
-            //Fitness = winRatio.Equals(0) ? 0 : (int) Math.Pow(2, winRatio);
-            //if (Fitness == 0) Fitness = 1;
+
+            if (Fitness == 0) Fitness = 1;
             NumberWins = 0;
             NumberDraws = 0;
             NumberLooses = 0;
         }
 
-        public void mutate(double mutationRate, Random random)
+        public void mutate(double mutationRate)
         {
             for (int i = 0; i < Genes.Count; i++)
             {
-                if (random.NextDouble() < mutationRate)
-                    Genes[i] = random.NextDouble() * 3 - 1.5;
+                if (Random.NextDouble() < mutationRate)
+                    Genes[i] = Random.NextDouble() * 3.2 - 1.6;
             }
         }
 
-        public DNA Crossover(DNA partner, Random random)
+        public DNA Crossover(DNA partner)
         {
-            DNA child = new DNA();
+            DNA child = new DNA(Random.Next());
             for (int i = 0; i < Genes.Count; i++)//coin flip decides if gene comes from parentA or parentB
             {
-                int choice = random.Next(2);
+                int choice = Random.Next(2);
 
                 Genes[i] = choice == 0 ? Genes[i] : partner.Genes[i];
             }
 
-            //for (int i = Genes.Count / 2; i < Genes.Count; i++)// half/half genes probably not
+            //int splitPoint = Random.Next(Genes.Count);
+            //for (int i = splitPoint; i < Genes.Count; i++)// half/half genes probably not
             //{
             //    Genes[i] = partner.Genes[i];
             //}
-            //for (int i = Genes.Count / 2; i < Genes.Count; i++)
+
+            //for (int i = 0; i < Genes.Count; i++)
             //{
             //    Genes[i] = (partner.Genes[i] + Genes[i]) / 2;
             //}
             child.Genes = Genes;
             return child;
+        }
+
+        public DNA Clone()
+        {
+            DNA clone = new DNA(Random.Next());
+            double[] geneCopy = new double[Genes.Count];
+            Genes.CopyTo(geneCopy);
+            clone.Genes = geneCopy.ToList();
+            clone.NumberWins = NumberWins;
+            return clone;
         }
     }
 }

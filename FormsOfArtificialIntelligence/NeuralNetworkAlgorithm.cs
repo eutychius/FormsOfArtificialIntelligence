@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FormsOfArtificialIntelligence
 {
@@ -107,9 +104,9 @@ namespace FormsOfArtificialIntelligence
                     for (int i = 0; i < numberConnections; i++)
                     {
                         if (reset)
-                            neuron.ConnectionWeights[i] = random.NextDouble() * 3 - 1.5;
+                            neuron.ConnectionWeights[i] = random.NextDouble() * 3.2 - 1.6;
                         else
-                            neuron.ConnectionWeights.Add(random.NextDouble() * 3 - 1.5);
+                            neuron.ConnectionWeights.Add(random.NextDouble() * 3.2 - 1.6);
 
                     }
                 }
@@ -131,7 +128,9 @@ namespace FormsOfArtificialIntelligence
                     }
                 }
             }
-            return weights;
+            double[] result = new double[weights.Count];
+            weights.CopyTo(result);
+            return result.ToList();
         }
 
         public void SetWeights(List<double> weights)

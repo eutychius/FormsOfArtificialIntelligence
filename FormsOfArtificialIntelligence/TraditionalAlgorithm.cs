@@ -29,13 +29,13 @@ namespace FormsOfArtificialIntelligence
             if (choice != -1)
                 return choice;
 
-            //for (int i = 1; i < board.Count; i++)
-            //{
-            //    if (board[i] != symbol && board[i] != opponentSymbol)
-            //        return i;
-            //}
+            for (int i = 1; i < board.Count; i++)
+            {
+                if (board[i] != symbol && board[i] != opponentSymbol)
+                    return i;
+            }
 
-            return MakeRandomMove(board);
+            return -1;
         }
 
         private int CheckForUsefulSecondSymbol(List<char> board)
