@@ -26,21 +26,12 @@ namespace FormsOfArtificialIntelligence
             int numberOfRounds = NumberWins + NumberLooses+ NumberDraws;
             double winRatio = (double)NumberWins / numberOfRounds;
             winRatio *= 100;
-            Fitness = (int) (winRatio * winRatio) + NumberDraws / 4;
+            Fitness = (int) (winRatio * winRatio);
 
-            if (Fitness == 0) Fitness = 1;
+            if (Fitness == 0) Fitness = 1;//so matingPool will never be empty
             NumberWins = 0;
             NumberDraws = 0;
             NumberLooses = 0;
-        }
-
-        public void mutate(double mutationRate)
-        {
-            for (int i = 0; i < Genes.Count; i++)
-            {
-                if (Random.NextDouble() < mutationRate)
-                    Genes[i] = Random.NextDouble() * 3.2 - 1.6;
-            }
         }
 
         public DNA Crossover(DNA partner)
@@ -53,18 +44,18 @@ namespace FormsOfArtificialIntelligence
                 Genes[i] = choice == 0 ? Genes[i] : partner.Genes[i];
             }
 
-            //int splitPoint = Random.Next(Genes.Count);
-            //for (int i = splitPoint; i < Genes.Count; i++)// half/half genes probably not
-            //{
-            //    Genes[i] = partner.Genes[i];
-            //}
-
-            //for (int i = 0; i < Genes.Count; i++)
-            //{
-            //    Genes[i] = (partner.Genes[i] + Genes[i]) / 2;
-            //}
             child.Genes = Genes;
             return child;
+        }
+
+        //generate new gene if mutating
+        public void Mutate(double mutationRate)
+        {
+            for (int i = 0; i < Genes.Count; i++)
+            {
+                if (Random.NextDouble() < mutationRate)
+                    Genes[i] = Random.NextDouble() * 3.2 - 1.6;
+            }
         }
 
         public DNA Clone()
