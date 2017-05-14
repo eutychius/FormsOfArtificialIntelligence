@@ -135,6 +135,8 @@ namespace FormsOfArtificialIntelligence
 
         public void SetWeights(List<double> weights)
         {
+            double[] newWeights = new double[weights.Count];
+            weights.CopyTo(newWeights);
             int weightCount = 0;
             foreach (var layer in neuralLayers)
             {
@@ -142,7 +144,7 @@ namespace FormsOfArtificialIntelligence
                 {
                     for (int i = 0; i < neuron.ConnectionWeights.Count; i++)
                     {
-                        neuron.ConnectionWeights[i] = weights[weightCount];
+                        neuron.ConnectionWeights[i] = newWeights[weightCount];
                         weightCount++;
                     }
                 }

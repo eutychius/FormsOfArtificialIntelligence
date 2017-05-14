@@ -27,7 +27,7 @@ namespace FormsOfArtificialIntelligence
             double winRatio = (double)NumberWins / numberOfRounds;
             winRatio *= 100;
             Fitness = (int) (winRatio * winRatio);
-
+            //Fitness = (long)winRatio;
             if (Fitness == 0) Fitness = 1;//so matingPool will never be empty
             NumberWins = 0;
             NumberDraws = 0;
